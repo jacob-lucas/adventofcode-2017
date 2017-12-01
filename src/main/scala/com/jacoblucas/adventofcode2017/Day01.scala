@@ -3,20 +3,21 @@ package com.jacoblucas.adventofcode2017
 import scala.annotation.tailrec
 
 object Day01 {
-  @tailrec
-  def sum(digits: Array[Int], cur: Int, next: Int, res: Int): Int = {
-    val currentValue = digits(cur)
-    val len = digits.length
+  def next(cur: Int, len: Int): Int = (cur + 1) % len
 
-    if (next == len) {
-      if (digits(0) == digits(len - 1)) res + currentValue else res
-    } else {
-      val nextValue = digits(next)
-      sum(digits, cur + 1, next + 1, if(currentValue == nextValue) res + currentValue else res)
+  def halfWayAround(cur: Int, len: Int): Int = (cur + len / 2) % len
+
+  @tailrec
+  def sum(digits: Array[Int], cur: Int, nextFunc: (Int, Int) => Int, res: Int): Int = {
+    if (cur == digits.length) res
+    else {
+      val currentValue = digits(cur)
+      val nextValue = digits(nextFunc(cur, digits.length))
+      sum(digits, cur + 1, nextFunc, if (currentValue == nextValue) res + currentValue else res)
     }
   }
 
-  def main (args: Array[String] ): Unit = {
+  def main(args: Array[String] ): Unit = {
     val lines = Util.read("/Day01.txt")
     val digits = lines.head.toCharArray.flatMap(c => {
       try {
@@ -26,6 +27,7 @@ object Day01 {
       }
     })
 
-    println(sum(digits, 0, 1, 0))
+    println(sum(digits, 0, Day01.next, 0))
+    println(sum(digits, 0, Day01.halfWayAround, 0))
   }
 }
