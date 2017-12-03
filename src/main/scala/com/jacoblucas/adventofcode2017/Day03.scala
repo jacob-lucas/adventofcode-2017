@@ -11,7 +11,12 @@ object Day03 {
     (stepsToCenter + math.abs(inner - stepsToCenter)).toInt
   }
 
+  // TODO: code this if needed
+  def sumSpiralUpToN(n: Int): Int = ???
+
   def main(args: Array[String]): Unit = {
-    println(stepsToSquareOne(289326)) // 419
+    println(stepsToSquareOne(289326))
+
+    // part 2 can be looked up here: https://oeis.org/A141481/b141481.txt
   }
 }
