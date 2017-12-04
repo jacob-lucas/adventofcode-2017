@@ -3,9 +3,7 @@ package com.jacoblucas.adventofcode2017
 object Day04 {
   def isValid(passphrase: String): Boolean = {
     val words = passphrase.split(" ")
-    words
-      .map(w => words.count(_ == w))
-      .count(_ == 1) == words.length
+    words.length == words.distinct.length
   }
 
   def isValidV2(passphrase: String): Boolean = {
