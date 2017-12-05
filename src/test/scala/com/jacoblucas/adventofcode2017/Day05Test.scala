@@ -40,10 +40,23 @@ class Day05Test extends WordSpec with Matchers {
         assertThat(instructions, equalTo(List(1,2,3)))
         assertThat(modifiedInstructions, equalTo(List(1,3,3)))
       }
+      "return a list with the adjusted offset for val >= 3" in {
+        val instructions = List(1,2,3)
+        val modifiedInstructions = Day05.adjustOffsetAt(2, instructions)
+        assertThat(instructions, equalTo(List(1,2,3)))
+        assertThat(modifiedInstructions, equalTo(List(1,2,2)))
+      }
+      "return a list with the adjusted offset for val < 3" in {
+        val instructions = List(1,2,3)
+        val modifiedInstructions = Day05.adjustOffsetAt(0, instructions)
+        assertThat(instructions, equalTo(List(1,2,3)))
+        assertThat(modifiedInstructions, equalTo(List(2,2,3)))
+      }
     }
     "processing instructions" should {
       "exit in the expected amount of steps" in {
-        assertThat(Day05.process(List(0,3,0,1,-3), 0, 0), is(5))
+        assertThat(Day05.process(List(0,3,0,1,-3), Day05.increaseOffsetAt, 0, 0), is(5))
+        assertThat(Day05.process(List(0,3,0,1,-3), Day05.adjustOffsetAt, 0, 0), is(10))
       }
     }
   }
