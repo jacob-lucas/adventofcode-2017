@@ -156,18 +156,23 @@ class Day06Test extends WordSpec with Matchers {
     }
     "detecting cycles" should {
       "return the number of cycles to detect a loop" in {
-        assertThat(Day06.reallocate(List(b1, b2, b3, b4), Set()), is(5))
+        assertThat(Day06.reallocate(List(b1, b2, b3, b4), Map())._1, is(5))
       }
       "breaks when detecting a cycle" in {
-        val seen = Set(
-          List(b2, b3, b4, b1),
-          List(b3, b2, b4, b1),
-          List(b2, b3, b1, b4),
-          List(b1, b2, b3, b4),
-          List(b1, b3, b4, b2),
-          List(b1, b4, b3, b2)
+        val seen = Map(
+          (List(b2, b3, b4, b1), 1),
+          (List(b3, b2, b4, b1), 2),
+          (List(b2, b3, b1, b4), 3),
+          (List(b1, b2, b3, b4), 4),
+          (List(b1, b3, b4, b2), 5),
+          (List(b1, b4, b3, b2), 6)
         )
-        assertThat(Day06.reallocate(List(b1, b2, b3, b4), seen), is(seen.size))
+        assertThat(Day06.reallocate(List(b1, b2, b3, b4), seen)._1, is(seen.size))
+      }
+    }
+    "calculating cycle length" should {
+      "count the number of cycles between the same banks-to-blocks allocation" in {
+        assertThat(Day06.reallocate(List(b1, b2, b3, b4), Map())._2, is(4))
       }
     }
   }

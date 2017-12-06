@@ -57,17 +57,18 @@ object Day06 {
   }
 
   @tailrec
-  def reallocate(banks: List[MemoryBank], seen: Set[List[MemoryBank]]): Int = {
+  def reallocate(banks: List[MemoryBank], seen: Map[List[MemoryBank], Int]): (Int, Int) = {
     if (seen.contains(banks)) {
-      println("Cycle detected [" + banks + "] after " + seen.size + " redistributions.")
-      seen.size
+      val len = seen.size - seen(banks)
+      println("Cycle detected [" + banks + "] after " + seen.size + " redistributions (len=" + len + ")")
+      (seen.size, len)
     } else {
       val max = sortByBlocks(banks).head
       println("(" + (seen.size + 1) +") Redistributing " + max + " in " + banks)
       val redistributed = redistribute(max.id, banks, (max.id + 1) % banks.size, max.blocks)
       println("In:  " + banks)
       println("Out: " + redistributed)
-      reallocate(redistributed, seen + banks)
+      reallocate(redistributed, seen updated (banks, seen.size))
     }
   }
 
@@ -87,6 +88,6 @@ object Day06 {
       .toList
 
     // part 1 and part 2 (part 1 answer printed to command line, part 2 answer inferred by subtracting from output)
-    println(reallocate(parse(banks), Set()))
+    println(reallocate(parse(banks), Map()))
   }
 }
