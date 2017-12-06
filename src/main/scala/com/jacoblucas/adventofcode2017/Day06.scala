@@ -14,24 +14,6 @@ object Day06 {
         b1.blocks > b2.blocks || (b1.blocks == b2.blocks && b1.id < b2.id))
   }
 
-  // individual cycle to redistribute blocks at a position between all the other memory banks
-//  @tailrec
-//  def redistribute(sortedBanks: List[MemoryBank], pos: Int, blocksRemaining: Int): List[MemoryBank] = {
-//    if (blocksRemaining == 0) sortedBanks.sortBy(_.id)
-//    else {
-//      val arr = sortedBanks.toArray
-//
-//      // take away 1 block
-//      arr(0) = MemoryBank(arr(0).id, arr(0).blocks - 1)
-//
-//      // give 1 block to the block at pos
-//      arr(pos) = MemoryBank(arr(pos).id, arr(pos).blocks + 1)
-//
-//      // redistribute the remainder
-//      redistribute(arr.toList, (pos + 1) % arr.length, blocksRemaining - 1)
-//    }
-//  }
-
   @tailrec
   def redistribute(id: Int, banks: List[MemoryBank], pos: Int, blocksRemaining: Int): List[MemoryBank] = {
     if (blocksRemaining == 0 || (blocksRemaining == 1 && pos == id)) banks
