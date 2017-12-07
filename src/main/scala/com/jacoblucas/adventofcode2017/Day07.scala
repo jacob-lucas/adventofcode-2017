@@ -54,16 +54,68 @@ object Day07 {
                 p._1,
                 p._2.weight,
                 p._2.disc.filterNot(d => overlap contains d))
-        }
-        )
+        })
 
       findBottomProgramName(updated)
     }
   }
 
+  def weight(name: String, tower: Map[String, Program]): (Int, List[Int]) = {
+    val program = tower(name)
+    if (program.disc.isEmpty) (program.weight, List())
+    else (program.weight, program.disc.map(n => totalWeight(weight(n, tower))))
+  }
+
+  def totalWeight(weight: (Int, List[Int])): Int = weight._1 + weight._2.sum
+
+  def isBalanced(program: Program, tower: Map[String, Program]): Boolean = {
+    // balances if empty or (all weights on the disc are the same and all programs above it are balanced)
+    val disc = program.disc
+    val isEmpty = disc.isEmpty
+    val allWeightsEqual = disc
+      .map(n => totalWeight(weight(n, tower)))
+      .distinct
+      .size == 1
+
+    isEmpty || (allWeightsEqual && disc.map(n => isBalanced(tower(n), tower)).reduce(_ && _))
+  }
+
+  @tailrec
+  def detectBalancePoint(towerAt: Program, tower: Map[String, Program]): Option[Program] = {
+    val disc = towerAt.disc
+
+    if (disc.isEmpty) None
+    else if (isBalanced(towerAt, tower)) {
+      // towerAt is where we are balanced, find the parent
+      Some(tower.filter(p => p._2.disc.contains(towerAt.name)).head._2)
+    }
+    else {
+      // dig into where the weight is off
+      val unbalancedProgram = disc
+        .map(n => (n, totalWeight(weight(n, tower))))
+        .groupBy(nw => nw._2)
+        .filter(p => p._2.size == 1)
+        .head
+        ._2
+        .head
+        ._1
+
+      detectBalancePoint(tower(unbalancedProgram), tower)
+    }
+
+  }
+
   def main(args: Array[String]): Unit = {
     val lines = Util.read("/Day07.txt")
     val tower = parseTower(lines)
-    println(findBottomProgramName(tower))
+    val bottomProgram = findBottomProgramName(tower)
+    println("bottom program = " + bottomProgram)
+    val balancePoint = detectBalancePoint(tower(bottomProgram), tower).get
+    println("balance point = " + balancePoint)
+
+    balancePoint.disc.foreach(n => {
+      val w = weight(n, tower)
+      println(n + "\t= " + w + " total = " + totalWeight(w))
+    })
   }
 }

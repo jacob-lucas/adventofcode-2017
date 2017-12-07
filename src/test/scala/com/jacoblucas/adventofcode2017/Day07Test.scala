@@ -58,5 +58,48 @@ class Day07Test extends WordSpec with Matchers {
         assertThat(Day07.findBottomProgramName(testTower), is(bottomProgram.name))
       }
     }
+    "calculating the weight of a tower" should {
+      "calculate the weight of that tower plus all the programs on its disc" in {
+        assertThat(Day07.weight("ugml", testTower), is((68, List(61,61,61))))
+        assertThat(Day07.weight("padx", testTower), is((45, List(66,66,66))))
+        assertThat(Day07.weight("fwft", testTower), is((72, List(57,57,57))))
+        assertThat(Day07.weight("tknk", testTower), is((41, List(251, 243, 243))))
+      }
+      "calculating total weight" in {
+        assertThat(Day07.totalWeight(68, List(61,61,61)), is(251))
+        assertThat(Day07.totalWeight(45, List(66,66,66)), is(243))
+        assertThat(Day07.totalWeight(72, List(57,57,57)), is(243))
+      }
+    }
+    "seeing if a tower is balanced" should {
+      "return true if each of the prorams on its disc, and all the programs above it have the same weight" in {
+        assertThat(Day07.isBalanced(Program("xhth", 68, List()), testTower), is(true))
+        assertThat(Day07.isBalanced(Program("ugml", 68, List("gyxo", "ebii", "jptl")), testTower), is(true))
+        assertThat(Day07.isBalanced(Program("padx", 45, List("pbga", "havc", "qoyq")), testTower), is(true))
+        assertThat(Day07.isBalanced(Program("fwft", 72, List("ktlj", "cntj", "qoyq")), testTower), is(false))
+        assertThat(Day07.isBalanced(bottomProgram, testTower), is(false))
+
+        val balancedTestTower = Map(
+        "tknk" -> Program("tknk", 41, List("padx", "fwft")),
+        "padx" -> Program("padx", 45, List("pbga", "havc", "qoyq")),
+        "fwft" -> Program("fwft", 72, List("ktlj", "cntj", "xhth")),
+        "pbga" -> Program("pbga", 66, List()),
+        "havc" -> Program("havc", 66, List()),
+        "qoyq" -> Program("qoyq", 66, List()),
+        "ktlj" -> Program("ktlj", 57, List()),
+        "cntj" -> Program("cntj", 57, List()),
+        "xhth" -> Program("xhth", 57, List())
+        )
+        assertThat(Day07.isBalanced(Program("tknk", 41, List("padx", "fwft")), balancedTestTower), is(true))
+      }
+    }
+    "detecting the balance point" should {
+      "return None for empty disc" in {
+        assertThat(Day07.detectBalancePoint(Program("", 0, List()), testTower).isDefined, is(false))
+      }
+      "find the program where the tower is not balanced" in {
+        assertThat(Day07.detectBalancePoint(bottomProgram, testTower).get, is(bottomProgram))
+      }
+    }
   }
 }
