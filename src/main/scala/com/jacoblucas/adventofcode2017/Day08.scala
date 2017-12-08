@@ -54,9 +54,9 @@ case class Register(id: String, value: Int) {
 
 object Day08 {
   @tailrec
-  def process(instructions: List[String], registerMap: Map[String, Register]): Map[String, Register] = {
+  def process(instructions: List[String], registerMap: Map[String, Register], maxSoFar: Int): (Map[String, Register], Int) = {
     instructions match {
-      case Nil => registerMap
+      case Nil => (registerMap, maxSoFar)
       case i :: is =>
         val parts = i.split(" ")
         val id = parts(0)
@@ -74,7 +74,9 @@ object Day08 {
           case "<=" => LessThanOrEqualTo(registerForCondition, parts(6).toInt)
           case "<"  => LessThan(registerForCondition, parts(6).toInt)
         }
-        process(is, registerMap.updated(id, register.apply(operation, condition)))
+        val updatedMap = registerMap.updated(id, register.apply(operation, condition))
+        val max = updatedMap.map(_._2.value).max
+        process(is, updatedMap, if (max > maxSoFar) max else maxSoFar)
     }
   }
 
@@ -88,9 +90,10 @@ object Day08 {
       })
       .toMap
 
-    val processed = process(lines, registers)
+    val processed = process(lines, registers, 0)
     println(processed)
-    println(processed.map(_._2.value).max)
+    println(processed._1.map(_._2.value).max)
+    println(processed._2)
   }
 }
 
