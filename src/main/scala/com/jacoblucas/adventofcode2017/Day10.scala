@@ -26,15 +26,48 @@ object Day10 {
   }
 
   @tailrec
-  def hash(input: List[Int], cur: Int, skip: Int, lengths: List[Int]): List[Int] = {
+  def hash(input: List[Int], cur: Int, skip: Int, lengths: List[Int]): (List[Int], Int, Int) = {
     lengths match {
-      case Nil => input
+      case Nil => (input, cur, skip)
       case l :: ls =>
         val sub = sublist(input, cur, l)
         val reversed = sub.reverse
         val merged = merge(reversed, input, input, cur)
         hash(merged, (cur + l + skip) % input.size, skip + 1, ls)
     }
+  }
+
+  def toBytes(input: String): List[Int] = input.map(_.toInt).toList
+
+  @tailrec
+  def densify(sparseHash: List[Int], dest: List[Int]): List[Int] = {
+    if (sparseHash.isEmpty) dest
+    else densify(sparseHash.takeRight(sparseHash.length - 16), dest :+ sparseHash.take(16).foldLeft(0)(_ ^ _))
+  }
+
+  def toHex(input: List[Int]): String = input
+    .map(i => {
+      val hex = i.toHexString
+      if (hex.length() == 1) "0" + hex else hex
+    })
+    .mkString("")
+
+  def knotHash(input: List[Int], lengths: List[Int], suffix: List[Int], remaining: Int): String = {
+    val appendedLengths = lengths ++ suffix
+
+    @tailrec
+    def process(input: List[Int], remaining: Int, cur: Int, skip: Int): (List[Int], Int, Int) = {
+      if (remaining == 0) {
+        (input, cur, skip)
+      } else {
+        val (res, c, s) = hash(input, cur, skip, appendedLengths)
+        process(res, remaining - 1, c, s)
+      }
+    }
+
+    val sparseHash = process(input, remaining, 0, 0)._1
+    val denseHash = densify(sparseHash, List())
+    toHex(denseHash)
   }
 
   def main(args: Array[String]): Unit = {
@@ -45,8 +78,13 @@ object Day10 {
       .split(",")
       .toList
       .map(_.toInt)
-    val res = hash(input, 0, 0, lengths)
+
+    // part 1
+    val (res, _, _) = hash(input, 0, 0, lengths)
     println(res)
     println(res.head + " * " + res(1) + " = " + (res.head * res(1)))
+
+    // part 2
+    println(knotHash(input, toBytes(lines.head), List(17, 31, 73, 47, 23), 64))
   }
 }

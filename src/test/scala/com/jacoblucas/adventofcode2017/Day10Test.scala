@@ -33,7 +33,24 @@ class Day10Test extends WordSpec with Matchers {
     }
     "calculating a hash" should {
       "return a correct result" in {
-        assertThat(Day10.hash(List(0,1,2,3,4), 0, 0, List(3,4,1,5)), is(List(3,4,2,1,0)))
+        assertThat(Day10.hash(List(0,1,2,3,4), 0, 0, List(3,4,1,5))._1, is(List(3,4,2,1,0)))
+      }
+    }
+    "converting a string to bytes" should {
+      "turn each character in the string to its ASCII code" in {
+        assertThat(Day10.toBytes("1,2,3"), is(List(49, 44, 50, 44, 51)))
+      }
+    }
+    "calculating a knot hash" should {
+      "converting a list of ints to a hex string" in {
+        assertThat(Day10.toHex(List(64, 7, 255)), is("4007ff"))
+      }
+      "return a correct result" in {
+        val input = (for (i <- 0 until 256) yield i).toList
+        assertThat(Day10.knotHash(input, Day10.toBytes(""), List(17, 31, 73, 47, 23), 64), is("a2582a3a0e66e6e86e3812dcb672a272"))
+        assertThat(Day10.knotHash(input, Day10.toBytes("AoC 2017"), List(17, 31, 73, 47, 23), 64), is("33efeb34ea91902bb2f59c9920caa6cd"))
+        assertThat(Day10.knotHash(input, Day10.toBytes("1,2,3"), List(17, 31, 73, 47, 23), 64), is("3efbe78a8d82f29979031a4aa0b16a9d"))
+        assertThat(Day10.knotHash(input, Day10.toBytes("1,2,4"), List(17, 31, 73, 47, 23), 64), is("63960835bcdc130f0b66d7ff4f6a5a8e"))
       }
     }
   }
