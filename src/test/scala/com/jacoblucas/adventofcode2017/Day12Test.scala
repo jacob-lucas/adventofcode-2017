@@ -35,5 +35,15 @@ class Day12Test extends WordSpec with Matchers {
         assertThat(Day12.canCommunicateWith(0, programs).sorted, is(List(0, 2, 3, 4, 5, 6)))
       }
     }
+    "detecting groups of programs" should {
+      "calculate correctly" in {
+        assertThat(Day12.group(programs.keys.toList, programs, List()), is(
+          List(
+            List(0, 2, 3, 4, 5, 6),
+            List(1)
+          )
+        ))
+      }
+    }
   }
 }
