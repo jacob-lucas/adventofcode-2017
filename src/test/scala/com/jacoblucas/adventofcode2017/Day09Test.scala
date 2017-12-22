@@ -21,5 +21,18 @@ class Day09Test extends WordSpec with Matchers {
         assertThat(Day09.score(Day09.prepare("{{<a!>},{<a!>},{<a!>},{<ab>}}"), 0, 1), is(3))
       }
     }
+    "counting number of non-cancelled chars" should {
+      "return the count" in {
+        assertThat(Day09.len("{}", 0), is(0))
+        assertThat(Day09.len("{{{}}}", 0), is(0))
+        assertThat(Day09.len("{{},{}}", 0), is(0))
+        assertThat(Day09.len("{{{},{},{{}}}}", 0), is(0))
+        assertThat(Day09.len("{<a>,<a>,<a>,<a>}", 0), is(4))
+        assertThat(Day09.len("{{<ab>},{<ab>},{<ab>},{<ab>}}", 0), is(8))
+        assertThat(Day09.len("{{<!!>},{<!!>},{<!!>},{<!!>}}", 0), is(8))
+        assertThat(Day09.len("{{<a!>},{<a!>},{<a!>},{<ab>}}", 0), is(8))
+
+      }
+    }
   }
 }

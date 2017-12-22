@@ -21,8 +21,16 @@ object Day09 {
       case '}' :: tail => score(tail, acc, level - 1)
     }
 
+  @tailrec
+  def len(string: String, count: Int): Int = {
+    val cleaned = string.replaceFirst(regexClean, "")
+    if (string == cleaned) count
+    else len(cleaned, count + string.length - cleaned.length - 2)
+  }
+
   def main(args: Array[String]): Unit = {
     val lines = Util.read("/Day09.txt")
     println(score(prepare(lines.head), 0, 1))
+    println(len(lines.head.replaceAll("!.", ""), 0))
   }
 }
