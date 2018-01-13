@@ -63,5 +63,20 @@ class Day14Test extends WordSpec with Matchers {
         assertThat(Day14.usedCount(grid), is(29))
       }
     }
+    "counting regions" should {
+      "count correctly" in {
+        val grid = List(
+          "11010100",
+          "01010101",
+          "00001010",
+          "10101101",
+          "01101000",
+          "11001001",
+          "01000100",
+          "11010110"
+        )
+        assertThat(Day14.regionCount(grid), is(12))
+      }
+    }
   }
 }
