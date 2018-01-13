@@ -70,6 +70,11 @@ object Day10 {
     toHex(denseHash)
   }
 
+  def knotHash(str: String): String = {
+    val input = (for (i <- 0 until 256) yield i).toList
+    knotHash(input, toBytes(str), List(17, 31, 73, 47, 23), 64)
+  }
+
   def main(args: Array[String]): Unit = {
     val lines = Util.read("/Day10.txt")
     val input = (for (i <- 0 until 256) yield i).toList
@@ -85,6 +90,6 @@ object Day10 {
     println(res.head + " * " + res(1) + " = " + (res.head * res(1)))
 
     // part 2
-    println(knotHash(input, toBytes(lines.head), List(17, 31, 73, 47, 23), 64))
+    println(knotHash(lines.head))
   }
 }
